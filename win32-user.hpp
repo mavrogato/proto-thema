@@ -68,4 +68,9 @@ inline HWND window(auto const& wc) noexcept {
     return nullptr;
 }
 
+inline auto Refresh(HWND hwnd, BOOL repaint = FALSE) {
+    return InvalidateRect(hwnd, nullptr, repaint) && UpdateWindow(hwnd);
+}
+
+
 #endif/*INCLUDE_WIN32_USER_DAF470F2_7C30_46D6_9A12_35401A05A4B3*/

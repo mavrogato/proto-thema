@@ -56,6 +56,10 @@ TEST_F(versor_test, vectorized_arithmetic) {
     ASSERT_EQ(vec(3, 2, 1), vec(4, 4, 4) - vec(1, 2, 3));
     ASSERT_EQ(vec(3, 4, 3), vec(1, 2, 3) * vec(3, 2, 1));
     ASSERT_EQ(vec(1, 2, 3), vec(1, 4, 9) / vec(1, 2, 3));
+    ASSERT_EQ(vec(-4, -4, -4), -(vec(1, 2, 3) + vec(3, 2, 1)));
+    ASSERT_EQ(vec(-3, -2, -1), -(vec(4, 4, 4) - vec(1, 2, 3)));
+    ASSERT_EQ(vec(-3, -4, -3), -(vec(1, 2, 3) * vec(3, 2, 1)));
+    ASSERT_EQ(vec(-1, -2, -3), -(vec(1, 4, 9) / vec(1, 2, 3)));
 }
 
 TEST_F(versor_test, vectorized_arithmetic_amp) {
@@ -83,6 +87,10 @@ TEST_F(versor_test, vectorized_arithmetic_amp) {
                 }
             });
     }
+    ASSERT_EQ(vec(-4, -4, -4), -ret[0]);
+    ASSERT_EQ(vec(-3, -2, -1), -ret[1]);
+    ASSERT_EQ(vec(-3, -4, -3), -ret[2]);
+    ASSERT_EQ(vec(-1, -2, -3), -ret[3]);
     ASSERT_EQ(vec(4, 4, 4), ret[0]);
     ASSERT_EQ(vec(3, 2, 1), ret[1]);
     ASSERT_EQ(vec(3, 4, 3), ret[2]);
