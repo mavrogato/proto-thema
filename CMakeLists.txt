@@ -9,12 +9,12 @@ set(CMAKE_CXX_FLAGS_DEBUG
 
 project(proto-thema)
 
-file(GLOB hdr *.hpp)
-file(GLOB src *.cc)
-list(FILTER src EXCLUDE REGEX ".*-test\.cc")
-file(GLOB tst *-test.cc)
+file(GLOB HDR *.hpp)
+file(GLOB SRC *.cc)
+list(FILTER SRC EXCLUDE REGEX ".*-test\.cc")
+file(GLOB TST *-test.cc)
 
-add_executable(proto-thema ${hdr} ${src})
+add_executable(proto-thema ${HDR} ${SRC})
 target_compile_options(proto-thema
   PRIVATE
   #-Zc:preprocessor -P -Fi:proto-thema.i
@@ -35,7 +35,7 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(proto-thema-test ${hdr} ${tst})
+add_executable(proto-thema-test ${HDR} ${TST})
 target_compile_options(proto-thema-test
   PRIVATE
   #-Zc:preprocessor -P -Fi:proto-thema-test.i

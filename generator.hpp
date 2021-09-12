@@ -8,24 +8,27 @@
 template <class T>
 struct generator {
     struct promise_type {
-        T const* value_;
+        T value_;
 
         generator get_return_object() noexcept { return generator{*this}; }
         std::suspend_always initial_suspend() noexcept { return {}; }
         std::suspend_always final_suspend()   noexcept { return {}; }
         void unhandled_exception() { throw; }
         std::suspend_always yield_value(T const& value) noexcept {
-            this->value_ = std::addressof(value);
+            this->value_ = value;
             return {};
         }
         void return_void() noexcept { }
     };
     struct iterator {
         using iterator_category = std::input_iterator_tag;
+        using size_type         = std::size_t;
         using differnce_type    = std::ptrdiff_t;
-        using value_type        = T;
-        using reference         = T const&;
-        using pointer           = T const*;
+        using value_type        = std::remove_cvref_t<T>;
+        using reference         = value_type&;
+        using const_reference   = value_type const&;
+        using pointer           = value_type*;
+        using const_pointer     = value_type const*;
 
         std::coroutine_handle<promise_type> coro_ = nullptr;
 
@@ -40,20 +43,30 @@ struct generator {
             }
             return *this;
         }
-        void operator++(int) {
+        iterator& operator++(int) {
+            auto tmp = *this;
             ++*this;
+            return tmp;
         }
-        [[nodiscard]] bool operator==(iterator const& rhs) const noexcept {
-            return this->coro_ == rhs.coro_;
+        [[nodiscard]]
+        friend bool operator==(iterator const& lhs, std::default_sentinel_t) noexcept {
+            return lhs.coro_.done();
         }
-        [[nodiscard]] bool operator!=(iterator const& rhs) const noexcept {
-            return this->coro_ != rhs.coro_;
+        [[nodiscard]]
+        friend bool operator!=(std::default_sentinel_t, iterator const& rhs) noexcept {
+            return rhs.coro_.done();
         }
-        [[nodiscard]] reference operator*() const noexcept {
-            return *this->coro_.promise().value_;
-        }
-        [[nodiscard]] pointer operator->() const noexcept {
+        [[nodiscard]] const_reference operator*() const noexcept {
             return this->coro_.promise().value_;
+        }
+        [[nodiscard]] reference operator*() noexcept {
+            return this->coro_.promise().value_;
+        }
+        [[nodiscard]] const_pointer operator->() const noexcept {
+            return std::addressof(this->coro_.promise().value_);
+        }
+        [[nodiscard]] pointer operator->() noexcept {
+            return std::addressof(this->coro_.promise().value_);
         }
     };
     [[nodiscard]] iterator begin() {
@@ -67,7 +80,7 @@ struct generator {
         }
         return iterator{this->coro_};
     }
-    [[nodiscard]] iterator end() noexcept { return {}; }
+    [[nodiscard]] std::default_sentinel_t end() noexcept { return std::default_sentinel; }
 
     [[nodiscard]] bool empty() noexcept { return this->coro_.done(); }
 

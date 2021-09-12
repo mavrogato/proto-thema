@@ -137,6 +137,15 @@
 // }
 
 int main() {
+    auto iota = [](int n) -> generator<int> {
+        for (int i = 0; i < n; ++i) {
+            co_yield i;
+        }
+    }(10);
+    // std::ranges::subrange range(iota);
+    for (auto iter = std/*::ranges*/::begin(iota); iter != std/*::ranges*/::end(iota); ++iter) {
+        std::cout << *iter << std::endl;
+    }
     struct wndclass : WNDCLASS {
         wndclass(wndclass const&) = delete;
         wndclass& operator=(wndclass const&) = delete;
@@ -184,6 +193,7 @@ int main() {
         bool handled = false;
         for (auto iter = sequences.begin(); iter != sequences.end(); ) {
             auto& sequence = *iter;
+            //auto range = std::ranges::subrange(iter->begin(), iter->end());
             if (!sequence.empty()) {
                 if (*sequence.begin()) {
                     handled = true;
