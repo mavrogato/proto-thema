@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS
-  "-EHsc -W4 -WX -Wv:18 -std:c++20 -await -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
+  "-EHsc -W4 -WX -Wv:18 -std:c++20 -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
+set(CMAKE_CXX_FLAGS_DEBUG
+  "-Od -Zi")
 
 project(proto-thema)
 
@@ -50,4 +52,5 @@ gtest_discover_tests(proto-thema-test)
 add_custom_target(run
   DEPENDS proto-thema proto-thema-test
   # COMMAND ctest
-  COMMAND start cmd.exe /K proto-thema)
+  # COMMAND start cmd.exe /K proto-thema
+  COMMAND start proto-thema)
